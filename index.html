@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/style.css?v=20261113c">
+<link rel="stylesheet" href="css/style.css?v=20261113i">
 <script>document.documentElement.classList.replace('no-js','js');</script>
 
 <script type="application/ld+json">
@@ -97,6 +97,7 @@
   <span class="hud__sep"></span>
   <b class="hud__lat">41.0082° N</b>
   <b class="hud__lon">28.9784° E</b>
+  <span>hdg <b class="hud__hdg">000°</b></span>
   <span class="hud__sep"></span>
   <span><b class="hud__nm">0000</b> <span class="hud__of">/ 5823</span> nm</span>
   <span class="hud__sep"></span>
@@ -128,7 +129,7 @@
 
   <!-- 01 THE NAME -->
   <section class="sec name" id="name" aria-labelledby="name-title">
-    <div class="sec__label mono"><span>(01)</span><span id="name-title">The name</span><span class="sec__label-r">Aegean, 38.5° N</span></div>
+    <div class="sec__label mono"><span>(01)</span><h2 class="sec__h" id="name-title">The name</h2><span class="sec__label-r">Aegean, 38.5° N</span></div>
     <div class="name__grid">
       <div class="entry" data-reveal>
         <div class="entry__head">
@@ -163,7 +164,7 @@
       </div>
       <div class="pipeline__viewport">
         <div class="pipeline__track">
-          <div class="pipeline__wire" aria-hidden="true"><i class="pipeline__fill"></i></div>
+          <div class="pipeline__wire" aria-hidden="true"><i class="pipeline__fill"></i><i class="pipeline__pulse"></i></div>
 
           <article class="stage">
             <span class="stage__node" aria-hidden="true"></span>
@@ -243,6 +244,10 @@
         <span class="stat__num"><span data-count="0">0</span></span>
         <span class="stat__label">auto-merges. A human clicks every one.</span>
       </div>
+      <div class="stat">
+        <span class="stat__num"><span data-count="2">2</span><small>mo</small></span>
+        <span class="stat__label">from pivot to a working factory, July 2026</span>
+      </div>
     </div>
     <div class="proof__rows">
       <div class="proof__row" data-reveal>
@@ -252,10 +257,6 @@
       <div class="proof__row" data-reveal>
         <span class="mono">Backed by</span>
         <p>Galata Business Angels, at a $5M valuation. June 2026.</p>
-      </div>
-      <div class="proof__row" data-reveal>
-        <span class="mono">Pivot to factory</span>
-        <p>Two months. From a company AI OS to a working software factory, July 2026.</p>
       </div>
     </div>
     <div class="proof__ctas">
@@ -283,9 +284,9 @@
               </symbol>
             </defs>
             <g class="board__squares"></g>
-            <g class="board__coords mono"></g>
+            <g class="board__coords mono" aria-hidden="true"></g>
             <path class="board__trail" d="" />
-            <g class="board__marks"></g>
+            <g class="board__marks" aria-hidden="true"></g>
             <g class="board__knight"><use href="#knight" x="-34" y="-36" width="68" height="68"/></g>
           </svg>
         </div>
@@ -349,7 +350,7 @@
 
   <!-- 04 PRINCIPLES -->
   <section class="sec principles" id="principles" aria-labelledby="pr-title">
-    <div class="sec__label mono"><span>(04)</span><span id="pr-title">Principles</span><span class="sec__label-r">How I play</span></div>
+    <div class="sec__label mono"><span>(04)</span><h2 class="sec__h" id="pr-title">Principles</h2><span class="sec__label-r">How I play</span></div>
     <ul class="plist">
       <li class="p" tabindex="0">
         <span class="p__n mono">01</span>
@@ -377,10 +378,10 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee__track">
       <div class="marquee__group">
-        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Merhaba</span><i>✦</i><span>Hello</span><i>✦</i><span class="o">Bonjour</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
+        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Türkçe</span><i>✦</i><span>English</span><i>✦</i><span class="o">Français</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
       </div>
       <div class="marquee__group">
-        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Merhaba</span><i>✦</i><span>Hello</span><i>✦</i><span class="o">Bonjour</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
+        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Türkçe</span><i>✦</i><span>English</span><i>✦</i><span class="o">Français</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
       </div>
     </div>
   </div>
@@ -414,7 +415,7 @@
 <script src="vendor/ScrollTrigger.min.js" defer></script>
 <script src="vendor/SplitText.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
-<script src="js/ocean.js?v=20261113c" defer></script>
-<script src="js/main.js?v=20261113c" defer></script>
+<script src="js/ocean.js?v=20261113i" defer></script>
+<script src="js/main.js?v=20261113i" defer></script>
 </body>
 </html>

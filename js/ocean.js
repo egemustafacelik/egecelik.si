@@ -195,7 +195,7 @@
     eye[2] = 2.2 - dive * 2.0;
     target[0] = mouseS[0] * 0.4;
     var portrait = W / H < 0.8;
-    target[1] = (portrait ? -2.6 : -0.4) - (1 - intro) * 2.6 - dive * 1.4;
+    target[1] = (portrait ? -2.6 + api.mix * 2.6 : -0.4) - (1 - intro) * 2.6 - dive * 1.4;
     target[2] = -20;
     var aspect = W / H;
     perspective(proj, fov, aspect, 0.1, 120);

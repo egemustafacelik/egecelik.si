@@ -65,7 +65,13 @@
     [0.995, 'Approaching San Francisco'],
     [2, 'Arrived. San Francisco']
   ];
-  var hud = $('.hud'), hLat = $('.hud__lat'), hLon = $('.hud__lon'), hNm = $('.hud__nm'), hTx = $('.hud__text');
+  var hud = $('.hud'), hLat = $('.hud__lat'), hLon = $('.hud__lon'), hNm = $('.hud__nm'), hTx = $('.hud__text'), hHdg = $('.hud__hdg');
+  function bearing(from, to) {
+    var p1 = from[0] * RAD, p2 = to[0] * RAD, dl = (to[1] - from[1]) * RAD;
+    var y = Math.sin(dl) * Math.cos(p2);
+    var x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+    return (Math.atan2(y, x) / RAD + 360) % 360;
+  }
   var bar = $('.progress i');
   $('.hud__of').textContent = '/ ' + TOTAL_NM;
   var lastStatus = '';
@@ -75,6 +81,8 @@
     hLat.textContent = Math.abs(ll[0]).toFixed(4) + '° ' + (ll[0] >= 0 ? 'N' : 'S');
     hLon.textContent = Math.abs(ll[1]).toFixed(4) + '° ' + (ll[1] >= 0 ? 'E' : 'W');
     hNm.textContent = String(Math.round(p * TOTAL_NM)).padStart(4, '0');
+    var hdg = p < 0.999 ? bearing(ll, B) : bearing(along(0.998), B);
+    if (hHdg) hHdg.textContent = String(Math.round(hdg) % 360).padStart(3, '0') + '°';
     var s = '';
     for (var i = 0; i < STOPS.length; i++) { if (p < STOPS[i][0]) { s = STOPS[i][1]; break; } }
     if (s !== lastStatus) { hTx.textContent = s; lastStatus = s; }
@@ -246,11 +254,31 @@
       });
     });
 
+    /* every reveal is a masked rise: the element slides up from behind its own clip */
+    function maskRise(targets, trigger, start, extra) {
+      return gsap.fromTo(targets,
+        { yPercent: 100, clipPath: 'inset(0% 0% 100% 0%)' },
+        Object.assign({
+          yPercent: 0, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'expo.out',
+          clearProps: 'clipPath,transform',
+          scrollTrigger: { trigger: trigger, start: start || 'top 90%', once: true }
+        }, extra || {}));
+    }
+
     $$('[data-reveal]').forEach(function (el) {
-      gsap.from(el, {
-        y: 46, opacity: 0, duration: 1.3, ease: 'expo.out',
-        scrollTrigger: { trigger: el, start: 'top 90%', once: true }
-      });
+      if (el.tagName === 'P' && Split) {
+        Split.create(el, {
+          type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true,
+          onSplit: function (self) {
+            return gsap.from(self.lines, {
+              yPercent: 108, duration: 1.2, ease: 'expo.out', stagger: 0.07,
+              scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+            });
+          }
+        });
+      } else {
+        maskRise(el, el);
+      }
     });
 
     $$('.sec__label').forEach(function (el) {
@@ -289,21 +317,16 @@
     });
 
     /* stats + clients stagger */
-    gsap.from('.stat', {
-      y: 60, opacity: 0, duration: 1.4, ease: 'expo.out', stagger: 0.09,
+    gsap.from('.stat__num > *', {
+      yPercent: 110, duration: 1.4, ease: 'expo.out', stagger: 0.03,
       scrollTrigger: { trigger: '.proof__grid', start: 'top 85%', once: true }
     });
-    gsap.from('.proof__ctas .btn', {
-      y: 30, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: 0.08,
-      scrollTrigger: { trigger: '.proof__ctas', start: 'top 92%', once: true }
-    });
+    maskRise('.stat__label', '.proof__grid', 'top 85%', { stagger: 0.08, delay: 0.15 });
+    maskRise('.proof__ctas .btn', '.proof__ctas', 'top 94%', { stagger: 0.08 });
 
     /* principles rows */
     $$('.p').forEach(function (p) {
-      gsap.from(p.querySelector('.p__t'), {
-        yPercent: 60, opacity: 0, duration: 1.4, ease: 'expo.out',
-        scrollTrigger: { trigger: p, start: 'top 90%', once: true }
-      });
+      maskRise(p.querySelector('.p__t'), p, 'top 92%', { duration: 1.4 });
     });
 
     /* contact title */
@@ -319,22 +342,17 @@
         }
       });
     }
-    gsap.from('.contact__links .btn', {
-      y: 40, opacity: 0, duration: 1.3, ease: 'expo.out', stagger: 0.07,
-      scrollTrigger: { trigger: '.contact__links', start: 'top 95%', once: true }
-    });
+    maskRise('.contact__links .btn', '.contact__links', 'top 96%', { stagger: 0.07 });
   }
 
   function setupScrollState() {
-    var navEl = $('.nav');
-    ST.create({
-      trigger: '.hero', start: 'bottom 90%', end: 'max',
-      onToggle: function (s) { navEl.classList.toggle('is-scrolled', s.isActive); }
-    });
-    /* voyage + progress on every scroll frame */
+    var navEl = $('.nav'), heroEl = $('.hero');
+    function navState() { navEl.classList.toggle('is-scrolled', window.scrollY > heroEl.offsetHeight * 0.85); }
+    /* voyage + progress + nav scrim on every scroll frame */
     ST.create({
       start: 0, end: 'max',
-      onUpdate: function (self) { voyage(self.progress); }
+      onUpdate: function (self) { voyage(self.progress); navState(); },
+      onRefresh: navState
     });
 
     /* ---------------------------------------------------------------- */
@@ -374,7 +392,21 @@
   function setupPipeline() {
     var section = $('.pipeline'), track = $('.pipeline__track'), fill = $('.pipeline__fill');
     var stages = $$('.stage'), countEl = $('.pipeline__count b');
+    var pulseEl = $('.pipeline__pulse'), wireEl = $('.pipeline__wire');
+    var pulse = { len: 0, axis: 'x', on: false };
     var lastOn = -1;
+    function runPulse(time) {
+      if (!pulse.on || pulse.len < 24) { pulseEl.style.opacity = '0'; return; }
+      var period = clamp(pulse.len / 420, 0.9, 2.6);
+      var t = (time % period) / period;
+      var pos = t * pulse.len;
+      pulseEl.style.opacity = String(Math.min(1, t * 8, (1 - t) * 6));
+      pulseEl.style.transform = pulse.axis === 'x' ? 'translate3d(' + pos.toFixed(1) + 'px,0,0)' : 'translate3d(0,' + pos.toFixed(1) + 'px,0)';
+    }
+    if (!reduce) {
+      gsap.ticker.add(runPulse);
+      ST.create({ trigger: section, start: 'top bottom', end: 'bottom top', onToggle: function (s) { pulse.on = s.isActive; } });
+    }
     function light(n) {
       if (n === lastOn) return;
       lastOn = n;
@@ -397,23 +429,28 @@
       section.classList.add('is-hscroll');
       var wire = $('.pipeline__wire');
       function dist() { return Math.max(0, track.scrollWidth - window.innerWidth); }
-      function scan(self) {
-        var pr = self && typeof self.progress === 'number' ? self.progress : 0;
+      function scan(pr) {
+        pr = typeof pr === 'number' ? pr : 0;
         var line = window.innerWidth * (0.2 + 0.72 * pr);
         var wr = wire.getBoundingClientRect();
-        fill.style.transform = 'scaleX(' + clamp((line - wr.left) / wr.width, 0, 1).toFixed(4) + ')';
+        var f = clamp((line - wr.left) / wr.width, 0, 1);
+        fill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
+        pulse.axis = 'x'; pulse.len = f * wr.width;
         var n = -1;
         stages.forEach(function (s, i) { if (s.getBoundingClientRect().left + 32 < line) n = i; });
         light(n);
       }
+      /* scan follows the track itself (the scrubbed tween), not the raw scroll,
+         so lights stay in sync while the scrub catches up after a fast jump */
       var tw = gsap.to(track, {
         x: function () { return -dist(); },
         ease: 'none',
+        onUpdate: function () { scan(this.progress()); },
         scrollTrigger: {
           trigger: section, pin: true, start: 'top top',
           end: function () { return '+=' + Math.round(dist() * 1.05); },
           scrub: 0.8, invalidateOnRefresh: true,
-          onUpdate: scan, onRefresh: scan
+          onRefresh: function () { scan(tw ? tw.progress() : 0); }
         }
       });
       return function () {
@@ -430,6 +467,7 @@
         trigger: track, start: 'top 62%', end: 'bottom 62%', scrub: 0.4,
         onUpdate: function (s) {
           fill.style.transform = 'scaleY(' + s.progress.toFixed(4) + ')';
+          pulse.axis = 'y'; pulse.len = s.progress * wireEl.getBoundingClientRect().height;
           var n = -1, line = window.innerHeight * 0.62;
           stages.forEach(function (st, i) { if (st.getBoundingClientRect().top + 28 < line) n = i; });
           light(n);
