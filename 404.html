@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lost at sea · Ege Çelik</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+  :root { --ink:#05090b; --cream:#efe9dc; --muted:#7e8a86; --glass:#7cf2c9; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--ink); color: var(--cream); }
+  body { display: grid; place-items: center; padding: 24px; font-family: "Instrument Serif", Georgia, serif; overflow: hidden; }
+  main { text-align: center; position: relative; z-index: 1; }
+  .code { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-weight: 400; font-size: clamp(64px, 14vw, 200px); line-height: .85; letter-spacing: -.04em; margin: 18px 0 22px; }
+  h1 em { color: var(--glass); }
+  a { color: var(--cream); font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid var(--glass); padding-bottom: 3px; }
+  .waves { position: fixed; left: 0; right: 0; bottom: 0; height: 40vh; opacity: .5;
+    background: repeating-radial-gradient(ellipse at 50% 140%, transparent 0 18px, rgba(124,242,201,.18) 19px 20px);
+    animation: swell 6s ease-in-out infinite alternate; }
+  @keyframes swell { to { transform: translateY(14px) scaleX(1.05); } }
+  @media (prefers-reduced-motion: reduce) { .waves { animation: none; } }
+</style>
+</head>
+<body>
+  <main>
+    <p class="code">404 · 0.0000° N, 0.0000° E</p>
+    <h1>Lost <em>at sea.</em></h1>
+    <a href="/">Back to shore</a>
+  </main>
+  <div class="waves" aria-hidden="true"></div>
+</body>
+</html>

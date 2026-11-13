@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ege Çelik · Named after a sea. Building an ocean.</title>
+<meta name="description" content="Ege Mustafa Çelik is the co-founder and CEO of Atlantic, the autonomous software factory that turns tickets into tested pull requests. Istanbul and San Francisco.">
+<meta name="author" content="Ege Mustafa Çelik">
+<link rel="canonical" href="https://egecelik.si/">
+<meta name="theme-color" content="#05090B">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://egecelik.si/">
+<meta property="og:site_name" content="Ege Çelik">
+<meta property="og:title" content="Ege Çelik · Named after a sea. Building an ocean.">
+<meta property="og:description" content="Co-founder and CEO of Atlantic, the autonomous software factory. Never open a PR again. Just review it.">
+<meta property="og:image" content="https://egecelik.si/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ege Çelik. Named after a sea. Building an ocean.">
+<meta property="profile:first_name" content="Ege">
+<meta property="profile:last_name" content="Çelik">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ege Çelik · Named after a sea. Building an ocean.">
+<meta name="twitter:description" content="Co-founder and CEO of Atlantic, the autonomous software factory.">
+<meta name="twitter:image" content="https://egecelik.si/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ege Mustafa Çelik",
+  "alternateName": "Ege Çelik",
+  "url": "https://egecelik.si/",
+  "jobTitle": "Co-Founder & CEO",
+  "worksFor": { "@type": "Organization", "name": "Atlantic", "url": "https://getatlantic.ai" },
+  "homeLocation": [{ "@type": "Place", "name": "Istanbul" }, { "@type": "Place", "name": "San Francisco" }],
+  "knowsLanguage": ["tr", "en", "fr"],
+  "sameAs": ["https://www.linkedin.com/in/egemustafacelik/"]
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#name">Skip to content</a>
+
+<div class="grain" aria-hidden="true"></div>
+<canvas id="ocean" aria-hidden="true"></canvas>
+
+<div class="cursor" aria-hidden="true">
+  <div class="cursor__ring"><span class="cursor__label"></span></div>
+  <div class="cursor__dot"></div>
+  <svg class="cursor__knight" viewBox="0 0 100 100"><use href="#knight"/></svg>
+</div>
+
+<div class="loader" aria-hidden="true">
+  <div class="loader__row loader__row--top mono">
+    <span>Charting course</span>
+    <span>41.0082° N, 28.9784° E</span>
+  </div>
+  <div class="loader__count"><span class="loader__num">000</span></div>
+  <div class="loader__row mono">
+    <span>Aegean</span>
+    <span class="loader__bar"><i></i></span>
+    <span>Atlantic</span>
+  </div>
+</div>
+
+<header class="nav">
+  <a href="#top" class="nav__mark" data-cursor="Top" aria-label="Ege Çelik, back to top">
+    <span class="nav__mark-e">E</span><span class="nav__mark-c">Ç</span>
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#name" data-nav="name">Name</a>
+    <a href="#atlantic" data-nav="atlantic">Atlantic</a>
+    <a href="#moves" data-nav="moves">Moves</a>
+    <a href="#principles" data-nav="principles">Principles</a>
+    <a href="#contact" data-nav="contact">Contact</a>
+  </nav>
+  <a class="nav__cta" href="https://www.linkedin.com/in/egemustafacelik/" target="_blank" rel="noopener" data-cursor="Say hi">
+    <span class="nav__cta-dot"></span>Say hello
+  </a>
+</header>
+
+<aside class="hud mono" aria-hidden="true">
+  <span class="hud__title">IST <span class="hud__arrow">→</span> SFO</span>
+  <span class="hud__sep"></span>
+  <b class="hud__lat">41.0082° N</b>
+  <b class="hud__lon">28.9784° E</b>
+  <span class="hud__sep"></span>
+  <span><b class="hud__nm">0000</b> <span class="hud__of">/ 5823</span> nm</span>
+  <span class="hud__sep"></span>
+  <span class="hud__status"><i></i><span class="hud__text">Departing Istanbul</span></span>
+</aside>
+<div class="progress" aria-hidden="true"><i></i></div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__top">
+      <p class="hero__eyebrow mono"><span class="live"></span>Co-Founder &amp; CEO, <a href="https://getatlantic.ai" target="_blank" rel="noopener" data-cursor="Open">Atlantic</a></p>
+      <p class="hero__index mono">Personal site<br>Vol. 01 · 2026</p>
+    </div>
+    <h1 class="hero__title" id="hero-title">
+      <span class="hero__line"><span class="hero__word">Ege</span></span>
+      <span class="hero__line hero__line--2"><span class="hero__word hero__word--it">Çelik</span></span>
+    </h1>
+    <div class="hero__bottom">
+      <p class="hero__tag"><span class="hero__tag-line">Named after a sea.</span> <span class="hero__tag-line"><em>Building an ocean.</em></span></p>
+      <div class="hero__meta mono">
+        <span class="hero__hint">Click the water</span>
+        <span>Istanbul / San Francisco</span>
+        <a href="#name" class="hero__scroll" data-cursor="Sail">Scroll to set sail <i></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 THE NAME -->
+  <section class="sec name" id="name" aria-labelledby="name-title">
+    <div class="sec__label mono"><span>(01)</span><span id="name-title">The name</span><span class="sec__label-r">Aegean, 38.5° N</span></div>
+    <div class="name__grid">
+      <div class="entry" data-reveal>
+        <div class="entry__head">
+          <span class="entry__word">Ege</span>
+          <span class="entry__pron mono">/ eh · geh /</span>
+        </div>
+        <p class="entry__pos mono">noun · Turkish</p>
+        <ol class="entry__defs">
+          <li>The Aegean Sea, between Anatolia and Greece.</li>
+          <li>A founder from Istanbul, currently building an ocean. <span class="entry__see">See also: <a href="#atlantic" data-cursor="Dive">Atlantic</a>.</span></li>
+        </ol>
+      </div>
+      <p class="manifesto" data-words>In Turkish, my name is a sea. I grew up in Istanbul, a city that lives on two continents at once and never picked a side. Now I run Atlantic, a company that teaches software to fix itself. <em>Same water. Bigger map.</em></p>
+    </div>
+  </section>
+
+  <!-- 02 ATLANTIC -->
+  <section class="sec atlantic" id="atlantic" aria-labelledby="atl-title">
+    <div class="sec__label mono"><span>(02)</span><span>Atlantic</span><span class="sec__label-r">getatlantic.ai</span></div>
+    <h2 class="display display--wide" id="atl-title" data-split>Never open a PR again.<br><em>Just review it.</em></h2>
+    <div class="atlantic__intro">
+      <p class="lede" data-reveal>Atlantic is an autonomous software factory. It reads the ticket and the code, writes the fix, tests it in a real browser and opens a pull request with the evidence attached. Engineers stay in charge of what ships.</p>
+      <p class="atlantic__note mono" data-reveal>Co-founded with Rüzgar İmren, CTO.<br>Backed by Galata Business Angels.</p>
+    </div>
+  </section>
+
+  <section class="pipeline" aria-label="How one Atlantic run works, in seven stages">
+    <div class="pipeline__pin">
+      <div class="pipeline__head mono">
+        <span>One run, seven stages</span>
+        <span class="pipeline__count"><b>01</b> / 07</span>
+      </div>
+      <div class="pipeline__viewport">
+        <div class="pipeline__track">
+          <div class="pipeline__wire" aria-hidden="true"><i class="pipeline__fill"></i></div>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">01</span>
+            <h3 class="stage__t">Ticket</h3>
+            <p class="stage__d">A new issue lands in your tracker. Atlantic starts on its own, no prompt needed.</p>
+            <pre class="stage__term" data-type="$ issue.opened  #1287&#10;&gt; status: investigating"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">02</span>
+            <h3 class="stage__t">Investigate</h3>
+            <p class="stage__d">Three finders read the ticket, the thread and the code without seeing each other's work. A judge commits to one thesis.</p>
+            <pre class="stage__term" data-type="finder_a ✓  finder_b ✓  finder_c ✓&#10;judge &gt; thesis selected"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">03</span>
+            <h3 class="stage__t">Confirm</h3>
+            <p class="stage__d">The bug is proven again against the code at its current head. No guessing on stale context.</p>
+            <pre class="stage__term" data-type="verify @ HEAD 9f3c1ea&#10;&gt; reproduced ✓"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">04</span>
+            <h3 class="stage__t">Patch</h3>
+            <p class="stage__d">The fix is written on its own branch, every line visible and reviewable.</p>
+            <pre class="stage__term" data-type="branch fix/checkout-vat&#10;+ 42  − 7  across 3 files"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">05</span>
+            <h3 class="stage__t">Preview</h3>
+            <p class="stage__d">A real preview environment boots with the change inside it. Not a mock, the actual app.</p>
+            <pre class="stage__term" data-type="preview.boot ...........&#10;&gt; ready  https://pr-1287.preview"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">06</span>
+            <h3 class="stage__t">Browser QA</h3>
+            <p class="stage__d">A browser agent walks the flow like a user, on video. If the fix can't prove itself, nothing ships.</p>
+            <pre class="stage__term" data-type="qa ▸ step 40/40  ● rec&#10;&gt; verdict: the change works"></pre>
+          </article>
+
+          <article class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <span class="stage__n">07</span>
+            <h3 class="stage__t">Pull request</h3>
+            <p class="stage__d">The PR opens with the thesis, the evidence and the QA verdict attached. You review. You merge.</p>
+            <pre class="stage__term" data-type="PR #412 opened&#10;&gt; review requested: you"></pre>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" aria-label="Atlantic in numbers">
+    <div class="proof__grid">
+      <div class="stat">
+        <span class="stat__num"><span data-count="71">71</span></span>
+        <span class="stat__label">pull requests opened for DSALTA</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num"><span data-count="68">68</span></span>
+        <span class="stat__label">merged by their engineers</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num"><span data-count="96">96</span><small>%</small></span>
+        <span class="stat__label">merge rate on that run</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num"><span data-count="0">0</span></span>
+        <span class="stat__label">auto-merges. A human clicks every one.</span>
+      </div>
+    </div>
+    <div class="proof__rows">
+      <div class="proof__row" data-reveal>
+        <span class="mono">Shipping for</span>
+        <ul class="clients"><li>DSALTA</li><li>a1mobile</li><li>Car Studio AI</li></ul>
+      </div>
+      <div class="proof__row" data-reveal>
+        <span class="mono">Backed by</span>
+        <p>Galata Business Angels, at a $5M valuation. June 2026.</p>
+      </div>
+      <div class="proof__row" data-reveal>
+        <span class="mono">Pivot to factory</span>
+        <p>Two months. From a company AI OS to a working software factory, July 2026.</p>
+      </div>
+    </div>
+    <div class="proof__ctas">
+      <a class="btn mag" href="https://getatlantic.ai" target="_blank" rel="noopener" data-cursor="Open"><span>Visit getatlantic.ai</span><i>↗</i></a>
+      <a class="btn btn--ghost mag" href="https://getatlantic.ai/fellowship" target="_blank" rel="noopener" data-cursor="Join"><span>Become an Atlantic Fellow</span><i>↗</i></a>
+    </div>
+  </section>
+
+  <!-- 03 MOVES -->
+  <section class="sec moves" id="moves" aria-labelledby="moves-title">
+    <div class="sec__label mono"><span>(03)</span><span>Moves</span><span class="sec__label-r">Knight's tour, 10 squares</span></div>
+    <h2 class="display display--wide" id="moves-title" data-split>Not a straight line.<br><em>A knight's path.</em></h2>
+    <p class="lede moves__lede" data-reveal>I learned strategy at a chessboard long before a boardroom. Every step since has been a calculated jump: sideways, forward, rarely where people expected the piece to land.</p>
+
+    <div class="moves__layout">
+      <div class="board-wrap">
+        <div class="board">
+          <svg class="board__svg" viewBox="-30 -10 840 840" role="img" aria-label="A chessboard tracing a knight's path, one square per milestone">
+            <defs>
+              <symbol id="knight" viewBox="0 0 100 100">
+                <path d="M33 77 L69 77 C73 58 74 35 62 19 L60 6 L52 13 C40 15 28 25 20 35 C14 41 15 47 20 50 C25 53 31 50 36 46 C41 53 35 63 33 77 Z"/>
+                <path d="M26 79 H74 V85 H26 Z"/>
+                <path d="M20 87 H80 V94 H20 Z"/>
+                <circle cx="41" cy="27" r="2.8" class="knight-eye"/>
+              </symbol>
+            </defs>
+            <g class="board__squares"></g>
+            <g class="board__coords mono"></g>
+            <path class="board__trail" d="" />
+            <g class="board__marks"></g>
+            <g class="board__knight"><use href="#knight" x="-34" y="-36" width="68" height="68"/></g>
+          </svg>
+        </div>
+        <div class="board__caption mono"><span>Move <b class="board__move">1</b> of 10</span><span class="board__sq">b1</span></div>
+      </div>
+
+      <ol class="moves__list">
+        <li class="move" data-sq="b1">
+          <span class="move__meta mono"><b>01</b> · start b1 · 2019</span>
+          <h3 class="move__t">The opening.</h3>
+          <p class="move__d">Top 20 at the Turkish National Chess Championship (U12). Long calculations, a ticking clock, and losing in public. Still the best training I've had.</p>
+        </li>
+        <li class="move" data-sq="c3">
+          <span class="move__meta mono"><b>02</b> · Nc3 · 2020</span>
+          <h3 class="move__t">Third in the country, all ages.</h3>
+          <p class="move__d">Zaxe National 3D Design Competition, no age brackets. I designed and printed a working object and finished third nationally.</p>
+        </li>
+        <li class="move" data-sq="e4">
+          <span class="move__meta mono"><b>03</b> · Ne4 · 2021</span>
+          <h3 class="move__t">Teknofest semi-finalist.</h3>
+          <p class="move__d">Turkey's largest technology festival. My first time building with a team against a real deadline.</p>
+        </li>
+        <li class="move" data-sq="f6">
+          <span class="move__meta mono"><b>04</b> · Nf6 · 2023 to 2025</span>
+          <h3 class="move__t">Holding the room.</h3>
+          <p class="move__d">Model United Nations delegate from Robert College to Koç and SEV. Negotiation, persuasion and thinking on my feet, in committee after committee.</p>
+        </li>
+        <li class="move" data-sq="h7">
+          <span class="move__meta mono"><b>05</b> · Nh7 · Oct 2024</span>
+          <h3 class="move__t">Founded Quantumo Agency.</h3>
+          <p class="move__d">AI-driven growth systems for B2B companies: lead generation, CRM automation and paid acquisition, all tied to revenue.</p>
+        </li>
+        <li class="move" data-sq="g5">
+          <span class="move__meta mono"><b>06</b> · Ng5 · Sep 2025</span>
+          <h3 class="move__t">CMO at Geçer Piyon.</h3>
+          <p class="move__d">A venture-backed EdTech company. The name is Turkish for “passed pawn”, the piece nothing can stop. Fitting.</p>
+        </li>
+        <li class="move" data-sq="e6">
+          <span class="move__meta mono"><b>07</b> · Ne6 · Feb 2026</span>
+          <h3 class="move__t">Co-founded Atlantic.</h3>
+          <p class="move__d">With Rüzgar İmren as CTO. We started by building a company AI OS.</p>
+        </li>
+        <li class="move" data-sq="d8">
+          <span class="move__meta mono"><b>08</b> · Nd8 · Jun 2026</span>
+          <h3 class="move__t">The angel round.</h3>
+          <p class="move__d">Galata Business Angels backed Atlantic at a $5M valuation.</p>
+        </li>
+        <li class="move" data-sq="b7">
+          <span class="move__meta mono"><b>09</b> · Nb7 · Jul 2026</span>
+          <h3 class="move__t">The pivot.</h3>
+          <p class="move__d">From a company AI OS to an autonomous software factory. Two months from decision to a factory opening real pull requests.</p>
+        </li>
+        <li class="move move--next" data-sq="a5">
+          <span class="move__meta mono"><b>10</b> · Na5 · next</span>
+          <h3 class="move__t">Next move.</h3>
+          <p class="move__d"><span class="live"></span>The factory opens to every engineering team. Soon.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 04 PRINCIPLES -->
+  <section class="sec principles" id="principles" aria-labelledby="pr-title">
+    <div class="sec__label mono"><span>(04)</span><span id="pr-title">Principles</span><span class="sec__label-r">How I play</span></div>
+    <ul class="plist">
+      <li class="p" tabindex="0">
+        <span class="p__n mono">01</span>
+        <h3 class="p__t">Think in lines, <em>not moves.</em></h3>
+        <div class="p__d"><p>Chess taught me to play the position three moves out. Product, hiring and fundraising get the same treatment.</p></div>
+      </li>
+      <li class="p" tabindex="0">
+        <span class="p__n mono">02</span>
+        <h3 class="p__t">Prove it <em>or don't say it.</em></h3>
+        <div class="p__d"><p>Atlantic opens pull requests with the evidence attached. I hold every claim we make to the same standard.</p></div>
+      </li>
+      <li class="p" tabindex="0">
+        <span class="p__n mono">03</span>
+        <h3 class="p__t">Speed is <em>a strategy.</em></h3>
+        <div class="p__d"><p>Two months from pivot to a working factory. Momentum compounds. So does hesitation.</p></div>
+      </li>
+      <li class="p" tabindex="0">
+        <span class="p__n mono">04</span>
+        <h3 class="p__t">Humans hold <em>the merge button.</em></h3>
+        <div class="p__d"><p>Automate the work, never the judgment. Every change Atlantic ships is approved by a person.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <div class="marquee__group">
+        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Merhaba</span><i>✦</i><span>Hello</span><i>✦</i><span class="o">Bonjour</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
+      </div>
+      <div class="marquee__group">
+        <span>Istanbul</span><i>✦</i><span class="o">San Francisco</span><i>✦</i><span class="it">Merhaba</span><i>✦</i><span>Hello</span><i>✦</i><span class="o">Bonjour</span><i>✦</i><span class="it">Aegean</span><i>✦</i><span>Atlantic</span><i>✦</i>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 CONTACT -->
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="sec__label mono"><span>(05)</span><span>Contact</span><span class="sec__label-r">Arriving San Francisco</span></div>
+    <h2 class="contact__title" id="contact-title"><span class="contact__l1">Let's make</span> <em class="contact__l2">a move.</em></h2>
+    <div class="contact__body">
+      <p class="lede" data-reveal>Building something, backing something, or want to build Atlantic with us? My LinkedIn inbox is open.</p>
+      <div class="contact__links">
+        <a class="btn btn--xl mag" href="https://www.linkedin.com/in/egemustafacelik/" target="_blank" rel="noopener" data-cursor="Say hi"><span>Message me on LinkedIn</span><i>↗</i></a>
+        <a class="btn btn--ghost mag" href="https://getatlantic.ai" target="_blank" rel="noopener" data-cursor="Open"><span>getatlantic.ai</span><i>↗</i></a>
+        <a class="btn btn--ghost mag" href="https://x.com/getatlanticai" target="_blank" rel="noopener" data-cursor="Follow"><span>Atlantic on X</span><i>↗</i></a>
+        <a class="btn btn--ghost mag" href="mailto:info@getatlantic.ai" data-cursor="Write"><span>info@getatlantic.ai</span><i>→</i></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot mono">
+  <div class="foot__clock"><span>Istanbul</span><b data-tz="Europe/Istanbul">--:--:--</b></div>
+  <div class="foot__clock"><span>San Francisco</span><b data-tz="America/Los_Angeles">--:--:--</b></div>
+  <div class="foot__c"><span>© 2026 Ege Mustafa Çelik</span><span>Charted at egecelik.si</span></div>
+  <a href="#top" class="foot__top" data-cursor="Up">Back to the surface ↑</a>
+</footer>
+
+<div class="toast mono" role="status" aria-live="polite"></div>
+
+<script src="/vendor/gsap.min.js" defer></script>
+<script src="/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/vendor/SplitText.min.js" defer></script>
+<script src="/vendor/lenis.min.js" defer></script>
+<script src="/js/ocean.js" defer></script>
+<script src="/js/main.js" defer></script>
+</body>
+</html>
