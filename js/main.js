@@ -189,7 +189,7 @@
   if (!hasGsap) {
     html.classList.add('no-motion');
     var ld = $('.loader'); if (ld) ld.style.display = 'none';
-    if (O) { O.intro = 1; O.active = true; }
+    if (O) { O.intro = 1; O.active = true; if (O.start) O.start(); }
     hud.classList.add('is-on');
     voyage(docProgress());
     window.addEventListener('scroll', function () { voyage(docProgress()); }, { passive: true });
@@ -244,7 +244,7 @@
     $$('[data-split]').forEach(function (el) {
       if (!Split) return;
       Split.create(el, {
-        type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true,
+        type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true, aria: 'none',
         onSplit: function (self) {
           return gsap.from(self.lines, {
             yPercent: 112, duration: 1.3, ease: 'expo.out', stagger: 0.1,
@@ -268,7 +268,7 @@
     $$('[data-reveal]').forEach(function (el) {
       if (el.tagName === 'P' && Split) {
         Split.create(el, {
-          type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true,
+          type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true, aria: 'none',
           onSplit: function (self) {
             return gsap.from(self.lines, {
               yPercent: 108, duration: 1.2, ease: 'expo.out', stagger: 0.07,
@@ -292,7 +292,7 @@
     var man = $('[data-words]');
     if (man && Split) {
       Split.create(man, {
-        type: 'words', wordsClass: 'w', autoSplit: true,
+        type: 'words', wordsClass: 'w', autoSplit: true, aria: 'none',
         onSplit: function (self) {
           return gsap.fromTo(self.words, { opacity: 0.13 }, {
             opacity: 1, ease: 'none', stagger: 0.12,
@@ -333,8 +333,9 @@
     var ct = $('.contact__title');
     if (ct && Split) {
       Split.create(ct, {
-        type: 'chars,lines', mask: 'lines', linesClass: 'split-line', autoSplit: true,
+        type: 'chars,lines', mask: 'lines', linesClass: 'split-line', autoSplit: true, aria: 'none',
         onSplit: function (self) {
+          self.chars.forEach(function (c) { c.setAttribute('aria-hidden', 'true'); });
           return gsap.from(self.chars, {
             yPercent: 115, rotate: 6, duration: 1.5, ease: 'expo.out', stagger: 0.03,
             scrollTrigger: { trigger: ct, start: 'top 82%', once: true }
@@ -429,15 +430,26 @@
       section.classList.add('is-hscroll');
       var wire = $('.pipeline__wire');
       function dist() { return Math.max(0, track.scrollWidth - window.innerWidth); }
+      /* geometry is measured on refresh only; per frame we just add the track's x */
+      var geo = null;
+      function measure() {
+        var x = gsap.getProperty(track, 'x') || 0;
+        geo = {
+          base: track.getBoundingClientRect().left - x,
+          wl: wire.offsetLeft, ww: wire.offsetWidth,
+          st: stages.map(function (s) { return s.offsetLeft; })
+        };
+      }
       function scan(pr) {
         pr = typeof pr === 'number' ? pr : 0;
+        if (!geo) measure();
+        var x = gsap.getProperty(track, 'x') || 0;
         var line = window.innerWidth * (0.2 + 0.72 * pr);
-        var wr = wire.getBoundingClientRect();
-        var f = clamp((line - wr.left) / wr.width, 0, 1);
+        var f = clamp((line - (geo.base + x + geo.wl)) / geo.ww, 0, 1);
         fill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
-        pulse.axis = 'x'; pulse.len = f * wr.width;
+        pulse.axis = 'x'; pulse.len = f * geo.ww;
         var n = -1;
-        stages.forEach(function (s, i) { if (s.getBoundingClientRect().left + 32 < line) n = i; });
+        for (var i = 0; i < geo.st.length; i++) { if (geo.base + x + geo.st[i] + 32 < line) n = i; }
         light(n);
       }
       /* scan follows the track itself (the scrubbed tween), not the raw scroll,
@@ -450,7 +462,7 @@
           trigger: section, pin: true, start: 'top top',
           end: function () { return '+=' + Math.round(dist() * 1.05); },
           scrub: 0.8, invalidateOnRefresh: true,
-          onRefresh: function () { scan(tw ? tw.progress() : 0); }
+          onRefresh: function () { geo = null; scan(tw ? tw.progress() : 0); }
         }
       });
       return function () {
@@ -463,13 +475,19 @@
       };
     });
     mm.add('(max-width: 959px)', function () {
+      var geoM = null;
+      function measureM() {
+        geoM = { wh: wireEl.offsetHeight, tops: stages.map(function (st) { return st.getBoundingClientRect().top + window.scrollY; }) };
+      }
       var a = ST.create({
         trigger: track, start: 'top 62%', end: 'bottom 62%', scrub: 0.4,
+        onRefresh: function () { geoM = null; },
         onUpdate: function (s) {
+          if (!geoM) measureM();
           fill.style.transform = 'scaleY(' + s.progress.toFixed(4) + ')';
-          pulse.axis = 'y'; pulse.len = s.progress * wireEl.getBoundingClientRect().height;
-          var n = -1, line = window.innerHeight * 0.62;
-          stages.forEach(function (st, i) { if (st.getBoundingClientRect().top + 28 < line) n = i; });
+          pulse.axis = 'y'; pulse.len = s.progress * geoM.wh;
+          var n = -1, line = window.scrollY + window.innerHeight * 0.62;
+          for (var i = 0; i < geoM.tops.length; i++) { if (geoM.tops[i] + 28 < line) n = i; }
           light(n);
         }
       });
@@ -623,15 +641,17 @@
     var chars = [];
     if (Split) {
       $$('.hero__word').forEach(function (w) {
-        var s = Split.create(w, { type: 'chars', charsClass: 'c' });
+        var s = Split.create(w, { type: 'chars', charsClass: 'c', aria: 'none' });
+        s.chars.forEach(function (c) { c.setAttribute('aria-hidden', 'true'); });
         chars = chars.concat(s.chars);
       });
     }
     gsap.set(chars, { transformOrigin: '0% 100%' });
     tl.from(chars.length ? chars : '.hero__word', { yPercent: 118, rotate: 7, duration: 1.7, stagger: 0.055 }, 0);
-    if (O && O.ok) tl.to(O, { intro: 1, duration: 3.2, ease: 'power3.out' }, 0);
+    tl.add(function () { if (O.start) O.start(); }, 0);
+    tl.to(O, { intro: 1, duration: 3.2, ease: 'power3.out' }, 0);
     if (Split) {
-      var tag = Split.create('.hero__tag', { type: 'lines', mask: 'lines', linesClass: 'split-line' });
+      var tag = Split.create('.hero__tag', { type: 'lines', mask: 'lines', linesClass: 'split-line', aria: 'none' });
       tl.from(tag.lines, { yPercent: 110, duration: 1.4, stagger: 0.12 }, 0.45);
     }
     tl.from('.hero__top > *, .hero__meta > *', { y: 22, opacity: 0, duration: 1.2, stagger: 0.07 }, 0.6);
@@ -685,6 +705,7 @@
     if (loaderEl) loaderEl.style.animation = 'none';
     if (reduce) {
       O.intro = 1;
+      if (O.start) O.start();
       hud.classList.add('is-on');
     } else {
       heroIntro();

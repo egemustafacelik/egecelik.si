@@ -9,18 +9,15 @@
     mix: 0,         // 0 Aegean palette, 1 Atlantic palette
     amp: 1,         // wave amplitude multiplier
     dive: 0,        // 0 hero view, 1 camera pushed toward the water
-    active: true,   // render only while a transparent section shows the sea
-    ok: false
+    active: true,   // a transparent section currently shows the sea
+    running: false, // main.js starts the loop when the curtain lifts
+    ok: false       // true once WebGL is up
   };
+  api.start = function () { api.running = true; };
   window.Ocean = api;
   if (!canvas) return;
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var gl = null;
-  try {
-    gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, powerPreference: 'high-performance' });
-  } catch (e) { gl = null; }
-  if (!gl) return;
 
   var VS = [
     'attribute vec2 a_p;',
@@ -84,37 +81,6 @@
     '}'
   ].join('\n');
 
-  function shader(type, src) {
-    var s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.warn('[ocean] shader:', gl.getShaderInfoLog(s));
-      return null;
-    }
-    return s;
-  }
-  var vs = shader(gl.VERTEX_SHADER, VS);
-  var fs = shader(gl.FRAGMENT_SHADER, FS);
-  if (!vs || !fs) return;
-  var prog = gl.createProgram();
-  gl.attachShader(prog, vs);
-  gl.attachShader(prog, fs);
-  gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-    console.warn('[ocean] link:', gl.getProgramInfoLog(prog));
-    return;
-  }
-  gl.useProgram(prog);
-
-  var U = {};
-  ['u_vp', 'u_time', 'u_amp', 'u_intro', 'u_dpr', 'u_size', 'u_mouse', 'u_click', 'u_mix'].forEach(function (n) {
-    U[n] = gl.getUniformLocation(prog, n);
-  });
-  var aP = gl.getAttribLocation(prog, 'a_p');
-  var buf = gl.createBuffer();
-  var count = 0;
-
   /* ---------- math ---------- */
   var proj = new Float32Array(16), view = new Float32Array(16), vp = new Float32Array(16);
   function perspective(out, fovy, aspect, near, far) {
@@ -144,11 +110,20 @@
     }
   }
 
+  /* ---------- state ---------- */
+  var gl = null, prog = null, buf = null, aP = -1, U = {}, count = 0;
+  var W = 0, H = 0, dpr = 1, fov = 0.9, quality = 1;
+  var lastW = 0, lastH = 0;
+  var eye = [0, 2.4, 2.2], target = [0, -0.4, -20], UP = [0, 1, 0];
+  var mouseN = [0, 0], mouseS = [0, 0];
+  var wake = [0, -12, 0], wakeT = [0, -12];
+  var click = [0, -12, 99, 0], clickStart = -999, lastMove = 0;
+
   /* ---------- geometry ---------- */
-  var W = 0, H = 0, dpr = 1, fov = 0.9;
   function build() {
     var w = window.innerWidth;
-    var cols = w < 640 ? 150 : (w < 1100 ? 200 : 260);
+    var base = w < 640 ? 150 : (w < 1100 ? 200 : 240);
+    var cols = Math.max(60, Math.round(base * quality));
     var rows = Math.round(cols * 0.85);
     var data = new Float32Array(cols * rows * 2);
     var k = 0;
@@ -166,29 +141,22 @@
     gl.vertexAttribPointer(aP, 2, gl.FLOAT, false, 0, 0);
   }
 
-  var lastW = 0, lastH = 0;
   function resize(force) {
     var w = window.innerWidth, h = window.innerHeight;
     if (!force && w === lastW && Math.abs(h - lastH) < 140) return;
     var rebuild = force || w !== lastW;
     lastW = w; lastH = h;
-    dpr = Math.min(window.devicePixelRatio || 1, w < 640 ? 1.5 : 2);
+    dpr = Math.min(window.devicePixelRatio || 1, w < 640 ? 1.5 : 2) * (quality < 1 ? 0.75 : 1);
     W = Math.round(w * dpr); H = Math.round(h * dpr);
     canvas.width = W; canvas.height = H;
     gl.viewport(0, 0, W, H);
     fov = w < 640 ? 1.15 : 0.92;
     if (rebuild) build();
-    if (reduce) draw(5.0);
+    draw(reduce ? 5.0 : lastTime);
   }
 
   /* ---------- camera + pointer ---------- */
-  var eye = [0, 2.4, 2.2], target = [0, -0.4, -20], UP = [0, 1, 0];
-  var mouseN = [0, 0], mouseS = [0, 0];        // normalized pointer, smoothed
-  var wake = [0, -12, 0], wakeT = [0, -12];      // ripple position (x, z) + strength
-  var click = [0, -12, 99, 0];                   // x, z, age, strength
-  var clickStart = -999;
-
-  function cameraFor(t) {
+  function cameraFor() {
     var intro = api.intro, dive = api.dive;
     eye[0] = mouseS[0] * 0.9;
     eye[1] = 2.4 + (1 - intro) * 3.4 - dive * 0.9 + mouseS[1] * 0.35;
@@ -197,13 +165,13 @@
     var portrait = W / H < 0.8;
     target[1] = (portrait ? -2.6 + api.mix * 2.6 : -0.4) - (1 - intro) * 2.6 - dive * 1.4;
     target[2] = -20;
-    var aspect = W / H;
-    perspective(proj, fov, aspect, 0.1, 120);
+    perspective(proj, fov, W / H, 0.1, 120);
     lookAt(view, eye, target, UP);
     mul(vp, proj, view);
   }
 
   function hitWater(nx, ny) {
+    if (!W || !H) return null;
     var fx = target[0] - eye[0], fy = target[1] - eye[1], fz = target[2] - eye[2];
     var l = Math.hypot(fx, fy, fz); fx /= l; fy /= l; fz /= l;
     var rx = fy * UP[2] - fz * UP[1], ry = fz * UP[0] - fx * UP[2], rz = fx * UP[1] - fy * UP[0];
@@ -218,30 +186,11 @@
     return [eye[0] + dx * t, eye[2] + dz * t];
   }
 
-  var lastMove = 0;
-  window.addEventListener('pointermove', function (e) {
-    mouseN[0] = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseN[1] = -((e.clientY / window.innerHeight) * 2 - 1);
-    var hit = hitWater(mouseN[0], mouseN[1]);
-    if (hit) { wakeT[0] = hit[0]; wakeT[1] = hit[1]; lastMove = performance.now(); }
-  }, { passive: true });
-
-  window.addEventListener('pointerdown', function (e) {
-    if (!api.active || reduce) return;
-    var nx = (e.clientX / window.innerWidth) * 2 - 1, ny = -((e.clientY / window.innerHeight) * 2 - 1);
-    var hit = hitWater(nx, ny);
-    if (!hit) return;
-    click[0] = hit[0]; click[1] = hit[1]; clickStart = performance.now();
-  }, { passive: true });
-
   /* ---------- render ---------- */
-  gl.disable(gl.DEPTH_TEST);
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-  gl.clearColor(0.0196, 0.0353, 0.0431, 1);
-
+  var lastTime = 0;
   function draw(time) {
-    cameraFor(time);
+    if (!gl || !count) return;
+    cameraFor();
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniformMatrix4fv(U.u_vp, false, vp);
     gl.uniform1f(U.u_time, time);
@@ -255,11 +204,22 @@
     gl.drawArrays(gl.POINTS, 0, count);
   }
 
-  var t0 = performance.now();
+  /* adaptive quality: if the device cannot hold ~40fps, thin the field once or twice */
+  var t0 = 0, prevNow = 0, samples = 0, sum = 0;
   function frame(now) {
     requestAnimationFrame(frame);
-    if (!api.active || document.hidden) return;
+    if (!api.running || !api.active || document.hidden) { prevNow = 0; return; }
+    if (!t0) t0 = now;
+    if (prevNow) {
+      sum += now - prevNow; samples++;
+      if (samples >= 90) {
+        if (sum / samples > 26 && quality > 0.4) { quality *= 0.62; resize(true); }
+        samples = 0; sum = 0;
+      }
+    }
+    prevNow = now;
     var time = (now - t0) / 1000;
+    lastTime = time;
     mouseS[0] += (mouseN[0] - mouseS[0]) * 0.04;
     mouseS[1] += (mouseN[1] - mouseS[1]) * 0.04;
     wake[0] += (wakeT[0] - wake[0]) * 0.08;
@@ -272,12 +232,65 @@
     draw(time);
   }
 
-  canvas.classList.add('is-gl');
-  api.ok = true;
-  resize(true);
-  window.addEventListener('resize', function () { resize(false); });
-  if (!reduce) requestAnimationFrame(frame);
-  else { api.intro = 1; draw(5.0); }
+  /* ---------- boot: after first paint, never blocking the main thread on shader compile ---------- */
+  function ready() {
+    gl.useProgram(prog);
+    ['u_vp', 'u_time', 'u_amp', 'u_intro', 'u_dpr', 'u_size', 'u_mouse', 'u_click', 'u_mix'].forEach(function (n) {
+      U[n] = gl.getUniformLocation(prog, n);
+    });
+    aP = gl.getAttribLocation(prog, 'a_p');
+    buf = gl.createBuffer();
+    gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    gl.clearColor(0.0196, 0.0353, 0.0431, 1);
 
-  api.redraw = function () { if (reduce) draw(5.0); };
+    window.addEventListener('pointermove', function (e) {
+      mouseN[0] = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseN[1] = -((e.clientY / window.innerHeight) * 2 - 1);
+      var hit = hitWater(mouseN[0], mouseN[1]);
+      if (hit) { wakeT[0] = hit[0]; wakeT[1] = hit[1]; lastMove = performance.now(); }
+    }, { passive: true });
+    window.addEventListener('pointerdown', function (e) {
+      if (!api.active || reduce) return;
+      var hit = hitWater((e.clientX / window.innerWidth) * 2 - 1, -((e.clientY / window.innerHeight) * 2 - 1));
+      if (!hit) return;
+      click[0] = hit[0]; click[1] = hit[1]; clickStart = performance.now();
+    }, { passive: true });
+    window.addEventListener('resize', function () { resize(false); });
+
+    canvas.classList.add('is-gl');
+    api.ok = true;
+    resize(true);
+    if (!reduce) requestAnimationFrame(frame);
+  }
+
+  function boot() {
+    try {
+      /* software GL (blocklisted GPU, headless, VMs) would stall the page: keep the static sea instead */
+      gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, powerPreference: 'high-performance', failIfMajorPerformanceCaveat: true });
+    } catch (e) { gl = null; }
+    if (!gl) return;
+    function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+    var vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    var par = gl.getExtension('KHR_parallel_shader_compile');
+    (function wait() {
+      if (par && !gl.getProgramParameter(prog, par.COMPLETION_STATUS_KHR)) { requestAnimationFrame(wait); return; }
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        console.warn('[ocean] shader:', gl.getShaderInfoLog(vs), gl.getShaderInfoLog(fs), gl.getProgramInfoLog(prog));
+        gl = null;
+        return;
+      }
+      ready();
+    })();
+  }
+
+  api.start = function () { api.running = true; };
+  api.redraw = function () { if (gl) draw(reduce ? 5.0 : lastTime); };
+
+  requestAnimationFrame(function () { setTimeout(boot, 0); });
 })();
