@@ -516,7 +516,12 @@ main, .foot { position: relative; z-index: 2; }
 }
 .contact__l1, .contact__l2 { display: block; }
 .contact__l2 { color: var(--glass); padding-left: 1.2em; }
-.contact__body .lede { text-shadow: 0 0 18px var(--ink), 0 0 6px var(--ink); color: var(--cream); }
+/* the sea behind this section is bright: text needs its own ground (Lighthouse cannot see the canvas) */
+.contact__body .lede {
+  color: var(--cream); background: rgba(5, 9, 11, 0.9); border-radius: 12px;
+  box-shadow: 0 0 22px 14px rgba(5, 9, 11, 0.9);
+}
+.contact__body .btn--ghost { background: rgba(5, 9, 11, 0.9); }
 .contact__body { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; margin-top: auto; }
 .contact__links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; max-width: 760px; }
 
@@ -545,6 +550,8 @@ main, .foot { position: relative; z-index: 2; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
+  .contact__body { grid-template-columns: 1fr; }
+  .contact__links { justify-content: flex-start; }
   .nav__links { display: none; }
 }
 
