@@ -548,6 +548,29 @@ main, .foot { position: relative; z-index: 2; }
 }
 .toast.is-on { transform: translate(-50%, 0); visibility: visible; }
 
+/* ---------- ground under text on the sea ----------
+   The canvas is invisible to Lighthouse and DOM contrast checks, so these were
+   measured in pixels (23 Nov 2026): each word gets a feathered dark ground that
+   follows it, the sea stays visible around and between the words. */
+/* no isolation: the grounds sit in the section's bottom layer, under every word, so one word's ground never covers another word */
+.hero__title, .contact__title, .hero__tag { position: relative; }
+.hero__title::before, .hero__title::after,
+.contact__title::before, .contact__title::after, .hero__tag::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  background: rgba(5, 9, 11, 0.9); border-radius: .3em;
+  box-shadow: 0 0 .22em .1em rgba(5, 9, 11, 0.9);
+}
+.hero__title::before { left: -.06em; top: -.06em; width: 1.2em; height: 1.08em; }
+.hero__title::after { left: .86em; top: .72em; width: 1.76em; height: 1.04em; }
+.contact__title::before { left: -.06em; top: -.06em; width: 3.26em; height: .98em; }
+.contact__title::after { left: 1.14em; top: .74em; width: 2.6em; height: .96em; }
+.hero__tag::before { left: -.1em; top: .02em; width: 6.9em; height: 2em; box-shadow: 0 0 .5em .25em rgba(5, 9, 11, 0.9); }
+.hero__eyebrow, .hero__index, .hero__meta > *, .hud {
+  background: rgba(5, 9, 11, 0.96); border-radius: 6px;
+  box-shadow: 0 0 10px 6px rgba(5, 9, 11, 0.96);
+}
+.hud { border-radius: 999px; padding: 12px 6px; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
   .contact__body { grid-template-columns: 1fr; }
@@ -592,6 +615,8 @@ main, .foot { position: relative; z-index: 2; }
 }
 
 @media (max-width: 640px) {
+  .hero__title::after { left: .44em; }
+  .contact__title::after { left: .34em; }
   body { font-size: 16px; }
   :root { --nav-h: 64px; }
   .nav__mark { font-size: 26px; }
