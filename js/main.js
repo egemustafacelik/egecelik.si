@@ -195,6 +195,7 @@
     window.addEventListener('scroll', function () { voyage(docProgress()); }, { passive: true });
     paintBoard(0);
     moves.forEach(function (m) { m.style.opacity = 1; });
+    setupFilm();
     return;
   }
 
@@ -276,6 +277,12 @@
             });
           }
         });
+      } else if (el.offsetHeight > 240) {
+        /* tall blocks (the entry with its photo) rise a short way, not their full height */
+        gsap.fromTo(el, { y: 90, clipPath: 'inset(0% 0% 100% 0%)' }, {
+          y: 0, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.out', clearProps: 'clipPath,transform',
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        });
       } else {
         maskRise(el, el);
       }
@@ -344,6 +351,25 @@
       });
     }
     maskRise('.contact__links .btn', '.contact__links', 'top 96%', { stagger: 0.07 });
+
+    /* photos + film: the frame opens from below, the picture settles and drifts with the scroll */
+    $$('.media').forEach(function (m) {
+      var pic = m.querySelector('img, video');
+      gsap.fromTo(m, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'expo.out', clearProps: 'clipPath',
+        scrollTrigger: { trigger: m, start: 'top 90%', once: true }
+      });
+      if (!pic) return;
+      gsap.fromTo(pic, { scale: 1.34 }, {
+        scale: 1.12, duration: 1.9, ease: 'expo.out',
+        scrollTrigger: { trigger: m, start: 'top 90%', once: true }
+      });
+      gsap.fromTo(pic, { yPercent: -5 }, {
+        yPercent: 5, ease: 'none',
+        scrollTrigger: { trigger: m, start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+    maskRise('.media__cap', '.media__cap', 'top 96%');
   }
 
   function setupScrollState() {
@@ -686,8 +712,33 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* film: the files carry no audio track at all; they load and play    */
+  /* only near the screen, and never autoplay for reduced motion        */
+  /* ---------------------------------------------------------------- */
+  function setupFilm() {
+    var vids = $$('video[data-src]');
+    if (!vids.length) return;
+    function load(v) { if (!v.getAttribute('src')) v.src = v.dataset.src; }
+    vids.forEach(function (v) { v.muted = true; if (reduce) v.controls = true; });
+    if (!('IntersectionObserver' in window)) { vids.forEach(load); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          load(v);
+          if (!reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        } else if (!v.paused) {
+          v.pause();
+        }
+      });
+    }, { rootMargin: '300px 0px' });
+    vids.forEach(function (v) { io.observe(v); });
+  }
+
+  /* ---------------------------------------------------------------- */
   /* boot                                                              */
   /* ---------------------------------------------------------------- */
+  setupFilm();
   setupCursor();
   setupPipeline();
   setupKnight();
