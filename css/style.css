@@ -229,7 +229,7 @@ main, .foot { position: relative; z-index: 2; }
   opacity: 0; transition: opacity .9s var(--ease);
 }
 .hud.is-on { opacity: 1; }
-@media (max-height: 700px) { .hud { display: none; } }
+@media (max-height: 700px), (max-width: 1199px) { .hud { display: none; } }
 .hud b { font-weight: 400; color: var(--cream); font-variant-numeric: tabular-nums; }
 .hud__title { color: var(--cream); }
 .hud__arrow { color: var(--glass); }
@@ -254,6 +254,17 @@ main, .foot { position: relative; z-index: 2; }
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(80% 60% at 30% 45%, rgba(5, 9, 11, 0.55), transparent 70%);
 }
+/* the main photo: the stage's starfield melts into the sea at its edges */
+.hero__photo {
+  position: absolute; z-index: -1; pointer-events: none; overflow: hidden;
+  right: calc(var(--pad) + 40px); top: calc(var(--nav-h) + 64px); bottom: clamp(36px, 7vh, 96px);
+  width: min(34vw, 560px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 9%, #000 64%, transparent 98%), linear-gradient(to right, transparent 0, #000 18%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 9%, #000 64%, transparent 98%), linear-gradient(to right, transparent 0, #000 18%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
+.hero__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; display: block; }
 .hero__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; color: var(--cream-2); }
 .hero__eyebrow a { color: var(--cream); border-bottom: 1px solid var(--glass); padding-bottom: 1px; }
 .hero__index { text-align: right; color: var(--muted); }
@@ -584,6 +595,7 @@ main, .foot { position: relative; z-index: 2; }
 .media--43 { aspect-ratio: 4 / 3; }
 .media--45 { aspect-ratio: 4 / 5; }
 .media--34 { aspect-ratio: 3 / 4; }
+.media--916 { aspect-ratio: 9 / 16; }
 .media > img, .media > video {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
   filter: saturate(.86) brightness(.94); transition: filter .8s var(--ease);
@@ -618,6 +630,18 @@ main, .foot { position: relative; z-index: 2; }
 .log__item--b { grid-column: 9 / span 4; margin-top: 18vh; }
 .log__item--c { grid-column: 2 / span 4; margin-top: -4vh; }
 .log__item--d { grid-column: 7 / span 4; margin-top: 12vh; }
+.log__item--f { grid-column: 1 / span 7; }
+.log__item--e { grid-column: 9 / span 3; margin-top: 14vh; }
+.log__item--g { grid-column: 3 / span 8; margin-top: -4vh; }
+
+.reels { margin-top: clamp(96px, 16vh, 190px); }
+.reels__head {
+  display: flex; justify-content: space-between; gap: 16px;
+  border-top: 1px solid var(--line); padding-top: 16px; margin: 0 0 clamp(32px, 6vh, 64px); color: var(--muted);
+}
+.reels__head span:first-child { color: var(--cream); }
+.reels__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 40px); max-width: 1100px; margin: 0 auto; }
+.reels__item:nth-child(2) { margin-top: 10vh; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
@@ -632,6 +656,29 @@ main, .foot { position: relative; z-index: 2; }
   .log__item--b { grid-column: 2 / -1; margin-top: 0; }
   .log__item--c { grid-column: 1 / span 5; margin-top: 0; }
   .log__item--d { grid-column: 2 / -1; margin-top: 0; }
+  .log__item--f { grid-column: 1 / -1; }
+  .log__item--e { grid-column: 2 / span 4; margin-top: 0; }
+  .log__item--g { grid-column: 1 / -1; margin-top: 0; }
+  .reels__row {
+    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad);
+  }
+  .reels__row::-webkit-scrollbar { display: none; }
+  .reels__item { flex: 0 0 68vw; max-width: 320px; scroll-snap-align: center; }
+  .reels__item:nth-child(2) { margin-top: 0; }
+  /* phones: the photo gets its own row above the name and fades into the dark before the name;
+     the name then sits on the sea, never on the photo */
+  .hero { grid-template-rows: auto auto 1fr auto; }
+  .hero__top { grid-row: 1; }
+  .hero__photo {
+    position: relative; grid-row: 2; inset: auto; width: auto;
+    height: min(52svh, 118vw); margin: 10px calc(var(--pad) * -1) 0;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 70%, transparent 100%);
+  }
+  .hero__photo img { object-position: 50% 14%; }
+  .hero__title { grid-row: 3; }
+  .hero__bottom { grid-row: 4; }
   .entry__fig { max-width: min(70vw, 320px); }
   .name__grid { grid-template-columns: 1fr; }
   .entry { position: relative; top: 0; }

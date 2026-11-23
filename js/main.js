@@ -369,7 +369,8 @@
         scrollTrigger: { trigger: m, start: 'top bottom', end: 'bottom top', scrub: true }
       });
     });
-    maskRise('.media__cap', '.media__cap', 'top 96%');
+    $$('.media__cap').forEach(function (cap) { maskRise(cap, cap, 'top 96%'); });
+    if ($('.hero__photo')) gsap.to('.hero__photo', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   }
 
   function setupScrollState() {
@@ -682,6 +683,8 @@
     }
     tl.from('.hero__top > *, .hero__meta > *', { y: 22, opacity: 0, duration: 1.2, stagger: 0.07 }, 0.6);
     tl.from('.nav > *', { y: -24, opacity: 0, duration: 1.2, stagger: 0.08 }, 0.5);
+    /* the main photo settles; scale only, so it is painted (and counted) from the first frame */
+    if ($('.hero__photo img')) tl.from('.hero__photo img', { scale: 1.14, duration: 2.8, ease: 'expo.out' }, 0);
     tl.add(function () { hud.classList.add('is-on'); }, 1.2);
     return tl;
   }
