@@ -722,13 +722,19 @@
     var vids = $$('video[data-src]');
     if (!vids.length) return;
     function load(v) { if (!v.getAttribute('src')) v.src = v.dataset.src; }
+    /* posters are fetched only when a film is getting close, not with the first page load */
+    function poster(v) { if (v.dataset.poster && !v.getAttribute('poster')) v.setAttribute('poster', v.dataset.poster); }
     vids.forEach(function (v) { v.muted = true; if (reduce) v.controls = true; });
-    if (!('IntersectionObserver' in window)) { vids.forEach(load); return; }
+    if (!('IntersectionObserver' in window)) { vids.forEach(function (v) { poster(v); load(v); }); return; }
+    var near = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { poster(e.target); near.unobserve(e.target); } });
+    }, { rootMargin: '1400px 0px' });
+    vids.forEach(function (v) { near.observe(v); });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var v = e.target;
         if (e.isIntersecting) {
-          load(v);
+          poster(v); load(v);
           if (!reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
         } else if (!v.paused) {
           v.pause();
