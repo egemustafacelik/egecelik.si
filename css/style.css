@@ -603,6 +603,7 @@ main, .foot { position: relative; z-index: 2; }
 .media:hover > img, .media:hover > video { filter: none; }
 .media__cap { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; margin-top: 14px; color: var(--muted); font-size: 11px; }
 .media__cap b { font-weight: 400; color: var(--glass); }
+.media__cap a { color: var(--cream); border-bottom: 1px solid var(--glass); padding-bottom: 1px; }
 .rec {
   position: absolute; left: 14px; top: 14px; z-index: 2;
   display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px;
