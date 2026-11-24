@@ -618,7 +618,8 @@ main, .foot { position: relative; z-index: 2; }
 
 .move__fig { margin-top: 28px; max-width: 30em; }
 .move__fig .media > img { object-position: 50% 50%; }
-.move:not(.is-active) .move__fig .media > img { filter: grayscale(.75) brightness(.55); }
+/* desktop only: on phones the active line sits low, so a picture in view would still look switched off */
+@media (min-width: 960px) { .move:not(.is-active) .move__fig .media > img { filter: grayscale(.75) brightness(.55); } }
 
 .log { background: var(--ink); }
 .log__title { margin-bottom: clamp(56px, 10vh, 120px); }
